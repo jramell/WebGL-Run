@@ -1,26 +1,29 @@
 //has projectionMatrix, viewMatrix
-var Camera = function() {
+var Camera = function(scene) {
+    this.scene = scene;
     this.projectionMatrix = mat4.create();
-    this.position = [0, 0, -10];
+    this.position = [0, 0, -9];
     this.lookDirection = [0, 0, 0];
     this.upVector = [0, 1, 0];
     this.viewMatrix = mat4.create();
 };
 
-Camera.prototype.initProjectionMatrix = function(webGLProgram, width, height){
+Camera.prototype.initProjectionMatrix = function(width, height, webGLProgram=this.scene.currentWebGLProgram){
+    let gl = this.scene.gl;
     this.projectionMatrixUniformLocation = gl.getUniformLocation(webGLProgram, 'projectionMatrix');
     mat4.perspective(this.projectionMatrix, glMatrix.toRadian(45), width/height, 0.1, 1000);
-    gl.uniformMatrix4fv(this.projectionMatrixUniformLocation, this.gl.FALSE, this.projectionMatrix);
+    gl.uniformMatrix4fv(this.projectionMatrixUniformLocation, gl.FALSE, this.projectionMatrix);
 };
 
-Camera.prototype.initViewMatrix = function(webGLProgram, position, lookingAt, upVector) {
-    viewMatrixUniformLocation = gl.getUniformLocation(webGLProgram, 'viewMatrix');
-    viewMatrix = new Float32Array(16);
-    mat4.lookAt(viewMatrix,
-        [0,0,-8], //position of the viewer
-        [0,0,0], //position the viewer is looking at
-        [0,1,0]); //vector defining what is up
-    gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
+Camera.prototype.initViewMatrix = function(webGLProgram=this.scene.currentWebGLProgram,
+                                           position=[0,0,-9], lookingAt=[0,0,0], upVector=[0,1,0]) {
+    this.viewMatrixUniformLocation = gl.getUniformLocation(webGLProgram, 'viewMatrix');
+    this.viewMatrix = new Float32Array(16);
+    mat4.lookAt(this.viewMatrix,
+        position, //position of the viewer
+        lookingAt, //position the viewer is looking at
+        upVector); //vector defining what is up
+    this.scene.gl.uniformMatrix4fv(this.viewMatrixUniformLocation, this.scene.gl.FALSE, this.viewMatrix);
 };
 
 Camera.prototype.setPosition = function(x, y, z) {

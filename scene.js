@@ -12,6 +12,11 @@ var Scene = function(gl, webGLProgram) {
     this.initWorldMatrix();
 };
 
+Scene.prototype.onLoaded = function () {
+    this.updateReferenceToWorldMatrix();
+    this.updateVertexPositionAttribLocation();
+};
+
 Scene.prototype.setWebGLProgram = function(webGLProgram) {
     this.currentWebGLProgram = webGLProgram;
 };
@@ -47,11 +52,6 @@ Scene.prototype.render = function() {
 Scene.prototype.updateSceneMatrices = function() {
     this.rootGameObject.updateWorldMatrix(this.worldMatrix);
 }
-
-Scene.prototype.onLoaded = function () {
-    this.updateReferenceToWorldMatrix();
-    this.updateVertexPositionAttribLocation();
-};
 
 Scene.prototype.sceneGraph = function() {
     var list = [];
