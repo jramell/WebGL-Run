@@ -104,3 +104,63 @@ function createCube() {
         indices: indices
     };
 }
+
+/**
+ *
+ * @param options contains between 0 and all of the following:
+ *          'baseColor': {r, g, b},
+ *          'leftFaceColor': {r, g, b}
+ *          'rightFaceColor': {r, g, b}
+ *          'frontFaceColor': {r, g, b}
+ *
+ * @returns {{vertices: *, indices: number[]}}
+ */
+function createPyramid(options=null) {
+    let baseColor = options && options['baseColor'] || {r: 0.5, g: 0.5, b: 0.5};
+    let leftFaceColor = options && options['leftFaceColor'] || {r: 0.75, g: 0.25, b: 0.5};
+    let rightFaceColor = options && options['rightFaceColor'] || {r: 0.25, g: 0.25, b: 0.75};
+    let frontFaceColor = options && options['rightFaceColor'] || {r: 1.0, g: 0.0, b: 0.15};
+    let backFaceColor = options && options['backFaceColor'] || {r: 1.0, g: 1.0, b: 0.15};
+
+    const vertices =
+        [ // X, Y, Z           R, G, B
+            //Base
+            -1.0, 1.0, -1.0,   baseColor['r'], baseColor['g'], baseColor['b'],
+            -1.0, 1.0, 1.0,    baseColor['r'], baseColor['g'], baseColor['b'],
+            1.0, 1.0, 1.0,     baseColor['r'], baseColor['g'], baseColor['b'],
+            1.0, 1.0, -1.0,    baseColor['r'], baseColor['g'], baseColor['b'],
+
+            // Left
+            -1.0, 1.0, -1.0,   leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
+            -1.0, 1.0,  1.0,   leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
+            0.0, 3.0,  0.0,    leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
+
+            // Right
+            1.0, 1.0, 1.0,     rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
+            1.0, 1.0, -1.0,    rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
+            0.0, 3.0,  0.0,    rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
+
+            // Front
+            -1.0, 1.0, 1.0,    frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
+             1.0, 1.0, 1.0,    frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
+             0.0, 3.0,  0.0,   frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
+
+            // Back
+            -1.0, 1.0, -1.0,   backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
+             1.0, 1.0, -1.0,   backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
+             0.0, 3.0,  0.0,   backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
+        ];
+
+    const indices = [
+        0, 1, 2,   0, 2, 3, //base
+        4, 5, 6,  //left
+        7, 8, 9,  //right
+        10, 11, 12, //front
+        13, 14, 15 //back
+    ];
+
+    return {
+        vertices: vertices,
+        indices: indices
+    };
+}

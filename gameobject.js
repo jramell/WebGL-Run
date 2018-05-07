@@ -1,9 +1,17 @@
-var GameObject = function() {
+var GameObject = function(scene, parent, name="GameObject") {
+    this.name = name;
     this.children = [];
     this.localMatrix = mat4.create();
     this.worldMatrix = mat4.create();
     this.indices = [];
     this.vertices = [];
+    this.scene = scene;
+    if(scene) {
+        scene.addGameObjectAsChildOfRoot(this);
+    }
+    if(parent) {
+        this.setParent(parent);
+    }
 };
 
 GameObject.prototype.setParent = function(parent) {
@@ -47,12 +55,14 @@ GameObject.prototype.setScale = function(x, y, z) {
     
 };
 
-GameObject.prototype._render = function() {
+GameObject.prototype.renderSelfAndChildren = function() {
     //does what every game object should do: update the world matrix in the shader before drawing itself, maybe other logic
+    this.renderSelf();
+    for(var i = 0; i < this.children.length; i++) {
+        this.children[i].renderSelfAndChildren();
+    }
 };
 
-GameObject.prototype.render = function () {
-    this._render();
-    //updates world matrix in shader, then uses gl.drawArrays... should be overwritten by each game object inheriting from it,
-    //but they should call the parent version
+GameObject.prototype.renderSelf = function () {
+    //updates world matrix to self's, uses gl.drawArrays... should be overwritten by each game object inheriting from it,
 };

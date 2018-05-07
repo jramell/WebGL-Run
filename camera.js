@@ -1,6 +1,5 @@
 //has projectionMatrix, viewMatrix
-var Camera = function(gl) {
-    this.gl = gl;
+var Camera = function() {
     this.projectionMatrix = mat4.create();
     this.position = [0, 0, -10];
     this.lookDirection = [0, 0, 0];
@@ -9,18 +8,19 @@ var Camera = function(gl) {
 };
 
 Camera.prototype.initProjectionMatrix = function(webGLProgram, width, height){
-    this.projectionMatrixUniformLocation = this.gl.getUniformLocation(webGLProgram, 'projectionMatrix');
+    this.projectionMatrixUniformLocation = gl.getUniformLocation(webGLProgram, 'projectionMatrix');
     mat4.perspective(this.projectionMatrix, glMatrix.toRadian(45), width/height, 0.1, 1000);
-    this.gl.uniformMatrix4fv(this.projectionMatrixUniformLocation, this.gl.FALSE, this.projectionMatrix);
+    gl.uniformMatrix4fv(this.projectionMatrixUniformLocation, this.gl.FALSE, this.projectionMatrix);
 };
 
 Camera.prototype.initViewMatrix = function(webGLProgram, position, lookingAt, upVector) {
-    this.viewMatrixUniformLocation = this.gl.getUniformLocation(webGLProgram, 'viewMatrix');
-    mat4.lookAt(this.viewMatrix,
-        position, //position of the viewer
-        lookingAt, //position the viewer is looking at
-        upVector); //vector defining what is up
-    this.update();
+    viewMatrixUniformLocation = gl.getUniformLocation(webGLProgram, 'viewMatrix');
+    viewMatrix = new Float32Array(16);
+    mat4.lookAt(viewMatrix,
+        [0,0,-8], //position of the viewer
+        [0,0,0], //position the viewer is looking at
+        [0,1,0]); //vector defining what is up
+    gl.uniformMatrix4fv(viewMatrixUniformLocation, gl.FALSE, viewMatrix);
 };
 
 Camera.prototype.setPosition = function(x, y, z) {
