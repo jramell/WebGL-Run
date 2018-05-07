@@ -1,3 +1,9 @@
+let Position = function() {
+    this.x = 0;
+    this.y = 0;
+    this.z = 0;
+};
+
 var GameObject = function(scene, parent, name="GameObject") {
     this.name = name;
     this.children = [];
@@ -6,6 +12,7 @@ var GameObject = function(scene, parent, name="GameObject") {
     this.indices = [];
     this.vertices = [];
     this.scene = scene;
+    this.position = new Position();
     if(scene) {
         scene.addGameObjectAsChildOfRoot(this);
     }
@@ -48,11 +55,18 @@ GameObject.prototype.updateWorldMatrix = function(parentWorldMatrix) {
 };
 
 GameObject.prototype.translate = function(x, y, z) {
+    this.position.x += x;
+    this.position.y += y;
+    this.position.z += z;
     mat4.translate(this.localMatrix, this.localMatrix, [x, y, z]);
 };
 
 GameObject.prototype.setScale = function(x, y, z) {
-    
+    mat4.scale(this.localMatrix, this.localMatrix, [x, y, z]);
+};
+
+GameObject.prototype.rotate = function(angle, axis) {
+    mat4.rotate(this.localMatrix, this.localMatrix, angle, axis);
 };
 
 GameObject.prototype.renderSelfAndChildren = function() {

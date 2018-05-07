@@ -1,4 +1,5 @@
-var gl; //global WebGL environment
+let gl; //global WebGL environment
+let sceneManager;
 
 main();
 
@@ -14,27 +15,49 @@ function main() {
     gl.useProgram(program);
 
     let mainScene = new Scene(gl, program);
-    let sceneManager = new SceneManager(gl);
+    sceneManager = new SceneManager(gl);
     sceneManager.loadScene(mainScene);
 
     let mainCamera = new Camera(mainScene);
     mainCamera.initViewMatrix();
     mainCamera.initProjectionMatrix(canvas.width, canvas.height);
+    mainCamera.translate(0, 5, -3);
 
     let pyramid = new Pyramid(mainScene);
-    let pyramid2 = new Pyramid(mainScene);
-    pyramid2.translate(3, 0, 0);
 
-    pyramid.setColor([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [1, 1, 0]);
+    pyramid.setColor([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]);
 
-    console.log("------- Start of Scene Graph -------");
-    console.log(mainScene.sceneGraph());
-    console.log("------- End of Scene Graph -------");
+//    console.log("------- Start of Scene Graph -------");
+//    console.log(mainScene.sceneGraph());
+//    console.log("------- End of Scene Graph -------");
 
     //Main render loop
-    let loop = function() {
+    let then = 0;
+
+    let farthestObstacleZ = 0;
+    let lane = 4;
+
+    let loop = function(now) {
+        now *= 0.001;
+        let deltaTime = now - then;
+        then = now;
+
         clearCanvas();
+        mainCamera.translate(0, 0, 6 * deltaTime);
+        pyramid.translate(0, 0, 6 * deltaTime);
         sceneManager.currentScene.render();
+
+        //----- code to be moved to an "Obstacle Generator" --------//
+        let distanceToFarthestObstacle = farthestObstacleZ - pyramid.position.z;
+        let distanceBetweenObstacles = 15;
+        let numberOfObservableObstacles = 6;
+        if(distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles) {
+            let obstacle = new Pyramid(mainScene);
+            obstacle.translate(lane, 0, farthestObstacleZ + distanceBetweenObstacles);
+            lane *= -1;
+            farthestObstacleZ += distanceBetweenObstacles;
+        }
+        //------------------------------------------------------------------
         requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);

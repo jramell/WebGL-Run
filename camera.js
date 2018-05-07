@@ -37,14 +37,19 @@ Camera.prototype.setLookDirection = function(x, y, z) {
 };
 
 Camera.prototype.translate = function(x, y, z) {
-    this.setPosition(
+    this.position = [
         this.position[0] + x,
         this.position[1] + y,
-        this.position[2] + z
-    );
+        this.position[2] + z]
+    this.lookDirection = [
+        this.lookDirection[0] + x,
+        this.lookDirection[1] + y,
+        this.lookDirection[2] + z]
+    this.update();
 };
 
 Camera.prototype.update = function() {
+    let gl = this.scene.gl;
     mat4.lookAt(this.viewMatrix, this.position, this.lookDirection, this.upVector);
-    this.gl.uniformMatrix4fv(this.viewMatrixUniformLocation, this.gl.FALSE, this.viewMatrix);
+    gl.uniformMatrix4fv(this.viewMatrixUniformLocation, gl.FALSE, this.viewMatrix);
 };

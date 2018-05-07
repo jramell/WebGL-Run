@@ -119,7 +119,7 @@ function createPyramid(options=null) {
     let baseColor = options && options['baseColor'] || {r: 0.5, g: 0.5, b: 0.5};
     let leftFaceColor = options && options['leftFaceColor'] || {r: 0.75, g: 0.25, b: 0.5};
     let rightFaceColor = options && options['rightFaceColor'] || {r: 0.25, g: 0.25, b: 0.75};
-    let frontFaceColor = options && options['rightFaceColor'] || {r: 1.0, g: 0.0, b: 0.15};
+    let frontFaceColor = options && options['frontFaceColor'] || {r: 1.0, g: 0.0, b: 0.15};
     let backFaceColor = options && options['backFaceColor'] || {r: 1.0, g: 1.0, b: 0.15};
 
     const vertices =
