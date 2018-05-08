@@ -4,12 +4,17 @@
  * @param webGLProgram
  * @constructor
  */
-var Scene = function(gl, webGLProgram) {
+let Scene = function(gl, webGLProgram) {
     this.gl = gl;
     this.setWebGLProgram(webGLProgram);
     this.rootGameObject = new GameObject(null, null, "Root");
     this.updateReferenceToWorldMatrix();
     this.initWorldMatrix();
+    this.garbageCollectors = [];
+};
+
+Scene.prototype.addGarbageCollector = function(garbageCollector) {
+    this.garbageCollectors.push(garbageCollector);
 };
 
 Scene.prototype.onLoaded = function () {
@@ -43,6 +48,10 @@ Scene.prototype.addGameObjectAsChildOfRoot = function(gameObject) {
     gameObject.setParent(this.rootGameObject);
 };
 
+Scene.prototype.update = function(deltaTime) {
+    this.rootGameObject.updateSelfAndChildren(deltaTime);
+};
+
 Scene.prototype.render = function() {
     this.setShaderWorldMatrix(this.worldMatrix);
     this.updateSceneMatrices();
@@ -54,14 +63,14 @@ Scene.prototype.updateSceneMatrices = function() {
 }
 
 Scene.prototype.sceneGraph = function() {
-    var list = [];
+    let list = [];
     this.descendanceList(this.rootGameObject, list);
     return list;
 };
 
 Scene.prototype.descendanceList = function(gameObject, list) {
     list.push(gameObject);
-    for(var i = 0; i < gameObject.children.length; i++) {
+    for(let i = 0; i < gameObject.children.length; i++) {
         this.descendanceList(gameObject.children[i], list);
     }
 };

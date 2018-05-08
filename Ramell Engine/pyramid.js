@@ -1,6 +1,6 @@
-var Pyramid = function(scene, parent, options=null) {
+let Pyramid = function(scene, parent, options=null) {
     GameObject.call(this, scene, parent);
-    var pyramidInfo = createPyramid(options);
+    let pyramidInfo = createPyramid(options);
     this.indices = new Uint16Array(pyramidInfo.indices);
     this.vertices = new Float32Array(pyramidInfo.vertices);
 };

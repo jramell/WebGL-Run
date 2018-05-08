@@ -164,3 +164,17 @@ function createPyramid(options=null) {
         indices: indices
     };
 }
+
+function distance(a, b) {
+    let x = b[0] - a[0];
+    let y = b[1] - a[1];
+    let z = b[2] - a[2];
+    return Math.sqrt(x*x + y*y + z*z);
+}
+
+function abs(number) {
+    if(number < 0) {
+        number *= -1;
+    }
+    return number;
+}

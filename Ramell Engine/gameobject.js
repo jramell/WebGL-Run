@@ -13,6 +13,7 @@ var GameObject = function(scene, parent, name="GameObject") {
     this.vertices = [];
     this.scene = scene;
     this.position = new Position();
+    this.components = [];
     if(scene) {
         scene.addGameObjectAsChildOfRoot(this);
     }
@@ -24,8 +25,8 @@ var GameObject = function(scene, parent, name="GameObject") {
 GameObject.prototype.setParent = function(parent) {
     // remove us from our parent
     if (this.parent) {
-        var indexInParent = this.parent.children.indexOf(this);
-        var isPartOfParentChilds = indexInParent >= 0;
+        let indexInParent = this.parent.children.indexOf(this);
+        let isPartOfParentChilds = indexInParent >= 0;
         if (isPartOfParentChilds) {
             this.parent.children.splice(indexInParent, 1);
         }
@@ -72,11 +73,24 @@ GameObject.prototype.rotate = function(angle, axis) {
 GameObject.prototype.renderSelfAndChildren = function() {
     //does what every game object should do: update the world matrix in the shader before drawing itself, maybe other logic
     this.renderSelf();
-    for(var i = 0; i < this.children.length; i++) {
+    for(let i = 0; i < this.children.length; i++) {
         this.children[i].renderSelfAndChildren();
     }
 };
 
 GameObject.prototype.renderSelf = function () {
     //updates world matrix to self's, uses gl.drawArrays... should be overwritten by each game object inheriting from it,
+};
+
+GameObject.prototype.updateSelfAndChildren = function(deltaTime) {
+    this.update(deltaTime);
+    for(let i = 0; i < this.children.length; i++) {
+        this.children[i].update(deltaTime);
+    }
+};
+
+GameObject.prototype.update = function(deltaTime) {
+    for(let i = 0; i < this.components.length; i++) {
+        this.components[i].update(deltaTime);
+    }
 };
