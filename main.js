@@ -23,16 +23,19 @@ function main() {
     mainCamera.initProjectionMatrix(canvas.width, canvas.height);
     mainCamera.translate(0, 5, -3);
 
-    let pyramid = new Pyramid(mainScene);
+    let player = new Pyramid(mainScene);
 
-    pyramid.setColor([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]);
+    player.setColor([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]);
 
 //    console.log("------- Start of Scene Graph -------");
 //    console.log(mainScene.sceneGraph());
 //    console.log("------- End of Scene Graph -------");
 
     let gc = new DistanceGarbageCollector(-15, 1);
-    gc.attachTo(pyramid);
+    gc.attachTo(player);
+
+    let playerController = new PlayerController();
+    playerController.attachTo(player);
 
     //Main render loop
     let then = 0;
@@ -47,12 +50,12 @@ function main() {
 
         clearCanvas();
         mainCamera.translate(0, 0, 6 * deltaTime);
-        pyramid.translate(0, 0, 6 * deltaTime);
+        player.translate(0, 0, 6 * deltaTime);
         sceneManager.currentScene.update(deltaTime);
         sceneManager.currentScene.render();
 
         //----- code to be moved to an "Obstacle Generator" --------//
-        let distanceToFarthestObstacle = farthestObstacleZ - pyramid.position.z;
+        let distanceToFarthestObstacle = farthestObstacleZ - player.position.z;
         let distanceBetweenObstacles = 15;
         let numberOfObservableObstacles = 6;
         if(distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles) {
