@@ -38,5 +38,6 @@ DistanceGarbageCollector.prototype.collect = function() {
             }
         }
     }
+    console.log(sceneManager.currentScene.sceneGraph());
     this.timeSinceLastCollect = 0;
 };

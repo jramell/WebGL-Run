@@ -25,6 +25,5 @@ PlayerController.prototype.update = function(deltaTime) {
         }
     };
     this.velocity.x = (+dKeyPressed*-1 + aKeyPressed) * this.speed * deltaTime;
-    console.log("translating player with velocity = " + this.velocity.x);
-    this.owner.translate(this.velocity.x, 0, 0);
+        this.owner.translate(this.velocity.x, 0, 0);
 };

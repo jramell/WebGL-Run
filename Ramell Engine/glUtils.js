@@ -51,43 +51,50 @@ function clearCanvas(gl, r, g, b, a) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 }
 
-function createCube() {
+function createCube(options=null) {
+    let frontFaceColor = options && options['frontFaceColor'] || {r: 1.0, g: 0.0, b: 0.15};
+    let backFaceColor = options && options['backFaceColor'] || {r: 1.0, g: 1.0, b: 0.15};
+    let topFaceColor = options && options['topFaceColor'] || {r: 0.5, g: 0.5, b: 0.5};
+    let bottomFaceColor = options && options['bottomFaceColor'] || {r: 0.75, g: 0.25, b: 0.5};
+    let rightFaceColor = options && options['rightFaceColor'] || {r: 0.25, g: 0.25, b: 0.75};
+    let leftFaceColor = options && options['leftFaceColor'] || {r: 0.45, g: 0.45, b: 0.6};
+
     const vertices = [
         // Front face
-        -1.0, -1.0,  1.0,
-        1.0, -1.0,  1.0,
-        1.0,  1.0,  1.0,
-        -1.0,  1.0,  1.0,
+        -1.0, -1.0,  1.0, frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
+        1.0, -1.0,  1.0, frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
+        1.0,  1.0,  1.0, frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
+        -1.0,  1.0,  1.0, frontFaceColor['r'], frontFaceColor['g'], frontFaceColor['b'],
 
         // Back face
-        -1.0, -1.0, -1.0,
-        -1.0,  1.0, -1.0,
-        1.0,  1.0, -1.0,
-        1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
+        -1.0,  1.0, -1.0, backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
+        1.0,  1.0, -1.0, backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
+        1.0, -1.0, -1.0, backFaceColor['r'], backFaceColor['g'], backFaceColor['b'],
 
         // Top face
-        -1.0,  1.0, -1.0,
-        -1.0,  1.0,  1.0,
-        1.0,  1.0,  1.0,
-        1.0,  1.0, -1.0,
+        -1.0,  1.0, -1.0, topFaceColor['r'], topFaceColor['g'], topFaceColor['b'],
+        -1.0,  1.0,  1.0, topFaceColor['r'], topFaceColor['g'], topFaceColor['b'],
+        1.0,  1.0,  1.0, topFaceColor['r'], topFaceColor['g'], topFaceColor['b'],
+        1.0,  1.0, -1.0, topFaceColor['r'], topFaceColor['g'], topFaceColor['b'],
 
         // Bottom face
-        -1.0, -1.0, -1.0,
-        1.0, -1.0, -1.0,
-        1.0, -1.0,  1.0,
-        -1.0, -1.0,  1.0,
+        -1.0, -1.0, -1.0, bottomFaceColor['r'], bottomFaceColor['g'], bottomFaceColor['b'],
+        1.0, -1.0, -1.0, bottomFaceColor['r'], bottomFaceColor['g'], bottomFaceColor['b'],
+        1.0, -1.0,  1.0, bottomFaceColor['r'], bottomFaceColor['g'], bottomFaceColor['b'],
+        -1.0, -1.0,  1.0, bottomFaceColor['r'], bottomFaceColor['g'], bottomFaceColor['b'],
 
         // Right face
-        1.0, -1.0, -1.0,
-        1.0,  1.0, -1.0,
-        1.0,  1.0,  1.0,
-        1.0, -1.0,  1.0,
+        1.0, -1.0, -1.0, rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
+        1.0,  1.0, -1.0, rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
+        1.0,  1.0,  1.0, rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
+        1.0, -1.0,  1.0, rightFaceColor['r'], rightFaceColor['g'], rightFaceColor['b'],
 
         // Left face
-        -1.0, -1.0, -1.0,
-        -1.0, -1.0,  1.0,
-        -1.0,  1.0,  1.0,
-        -1.0,  1.0, -1.0,
+        -1.0, -1.0, -1.0, leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
+        -1.0, -1.0,  1.0, leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
+        -1.0,  1.0,  1.0, leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
+        -1.0,  1.0, -1.0, leftFaceColor['r'], leftFaceColor['g'], leftFaceColor['b'],
     ];
 
     const indices = [

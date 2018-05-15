@@ -17,7 +17,7 @@ Camera.prototype.initProjectionMatrix = function(width, height, webGLProgram=thi
 
 Camera.prototype.initViewMatrix = function(webGLProgram=this.scene.currentWebGLProgram,
                                            position=[0,0,-9], lookingAt=[0,0,0], upVector=[0,1,0]) {
-    this.viewMatrixUniformLocation = gl.getUniformLocation(webGLProgram, 'viewMatrix');
+    this.viewMatrixUniformLocation = this.scene.gl.getUniformLocation(webGLProgram, 'viewMatrix');
     this.viewMatrix = new Float32Array(16);
     mat4.lookAt(this.viewMatrix,
         position, //position of the viewer
