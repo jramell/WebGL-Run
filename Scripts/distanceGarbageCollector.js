@@ -23,7 +23,7 @@ DistanceGarbageCollector.prototype.update = function(deltaTime) {
 };
 
 DistanceGarbageCollector.prototype.collect = function() {
-    let objectsInScene = this.owner.scene.sceneGraph();
+    objectsInScene = this.owner.scene.sceneGraph();
     for(let i = 0; i < objectsInScene.length; i++) {
         let currentObject = objectsInScene[i];
         let distanceWithObject = currentObject.position.z - this.owner.position.z;
@@ -31,13 +31,18 @@ DistanceGarbageCollector.prototype.collect = function() {
         if(this.maxDistance > 0) {
             if(distanceWithObject >= this.maxDistance) {
                 currentObject.setParent(null);
+				currentObject = null;
+				objectsInScene[i] = null;
             }
         } else {
             if(distanceWithObject <= this.maxDistance) {
                 currentObject.setParent(null);
+				currentObject = null;
+				objectsInScene[i] = null;
             }
         }
     }
-    console.log(sceneManager.currentScene.sceneGraph());
+    //console.log(sceneManager.currentScene.sceneGraph());
     this.timeSinceLastCollect = 0;
+	objectsInScene.length = 0;
 };

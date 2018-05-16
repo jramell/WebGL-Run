@@ -25,7 +25,7 @@ function main() {
     let player = new Cube(mainScene);
 
     player.setColor([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]);
-    player.translate(0, 1.5, 0);
+    player.translate(0, 2, 0);
 
     console.log("------- Start of Scene Graph -------");
     console.log(mainScene.sceneGraph());
