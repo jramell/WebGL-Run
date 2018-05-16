@@ -4,7 +4,7 @@ let Position = function() {
     this.z = 0;
 };
 
-var GameObject = function(scene, parent, name="GameObject") {
+let GameObject = function(scene, parent, name="GameObject") {
     this.name = name;
     this.children = [];
     this.localMatrix = mat4.create();
@@ -60,6 +60,16 @@ GameObject.prototype.translate = function(x, y, z) {
     this.position.y += y;
     this.position.z += z;
     mat4.translate(this.localMatrix, this.localMatrix, [x, y, z]);
+};
+
+GameObject.prototype.setPosition = function(x, y, z) {
+    let deltaX = x - this.position.x;
+    let deltaY = y - this.position.y;
+    let deltaZ = z - this.position.z;
+    mat4.translate(this.localMatrix, this.localMatrix, [deltaX, deltaY, deltaZ]);
+    this.position.x = x;
+    this.position.y = y;
+    this.position.z = z;
 };
 
 GameObject.prototype.setScale = function(x, y, z) {

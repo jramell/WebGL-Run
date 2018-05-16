@@ -10,11 +10,6 @@ let Scene = function(gl, webGLProgram) {
     this.rootGameObject = new GameObject(null, null, "Root");
     this.updateReferenceToWorldMatrix();
     this.initWorldMatrix();
-    this.garbageCollectors = [];
-};
-
-Scene.prototype.addGarbageCollector = function(garbageCollector) {
-    this.garbageCollectors.push(garbageCollector);
 };
 
 Scene.prototype.onLoaded = function () {

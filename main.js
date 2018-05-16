@@ -22,13 +22,13 @@ function main() {
     mainCamera.initProjectionMatrix(canvas.width, canvas.height);
     mainCamera.translate(0, 5, -3);
 
-    let player = new Cube(mainScene);
+    let player = new Cube("Player", mainScene);
 
     player.setColor([0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]);
     player.translate(0, 2, 0);
 
     console.log("------- Start of Scene Graph -------");
-    console.log(mainScene.sceneGraph());
+    console.log(mainScene.sceneGraph);
     console.log("------- End of Scene Graph -------");
 
     let gc = new DistanceGarbageCollector(-15, 1);
@@ -36,21 +36,22 @@ function main() {
 
     let playerController = new PlayerController();
     playerController.attachTo(player);
+    playerController.velocity.z = 10;
 
     //Main render loop
     let then = 0;
 
     let farthestObstacleZ = 0;
     let lane = 4;
-
+    let deltaTime = 0;
     let loop = function(now) {
         now *= 0.001;
-        let deltaTime = now - then;
+        deltaTime = now - then;
         then = now;
 
         clearCanvas();
-        mainCamera.translate(0, 0, 20 * deltaTime);
-        player.translate(0, 0, 20 * deltaTime);
+        mainCamera.translate(0, 0, 10 * deltaTime);
+
         sceneManager.currentScene.update(deltaTime);
         sceneManager.currentScene.render();
 

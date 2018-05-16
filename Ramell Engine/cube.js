@@ -1,5 +1,5 @@
-let Cube = function(scene, parent, options=null) {
-    GameObject.call(this, scene, parent);
+let Cube = function(name="Cube", scene, parent, options=null) {
+    GameObject.call(this, scene, parent, name);
     let cubeInfo = createCube(options);
     this.indices = new Uint16Array(cubeInfo.indices);
     this.vertices = new Float32Array(cubeInfo.vertices);
