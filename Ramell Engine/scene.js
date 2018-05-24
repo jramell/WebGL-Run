@@ -58,14 +58,24 @@ Scene.prototype.updateSceneMatrices = function() {
 }
 
 Scene.prototype.sceneGraph = function() {
-    let list = [];
-    this.descendanceList(this.rootGameObject, list);
-    return list;
+    let objectList = [];
+    let colliderList = [];
+    this.descendanceList(this.rootGameObject, objectList, colliderList);
+    return {
+        gameObjects: objectList,
+        objectsWithColliders: colliderList
+    };
 };
 
-Scene.prototype.descendanceList = function(gameObject, list) {
+Scene.prototype.descendanceList = function(gameObject, list, colliderList) {
     list.push(gameObject);
+    for(let i = 0; i < gameObject.components.length; i++) {
+        if(gameObject.components[i] instanceof BoxCollider) {
+            colliderList.push(gameObject.components[i]);
+        }
+    }
+    if(this)
     for(let i = 0; i < gameObject.children.length; i++) {
-        this.descendanceList(gameObject.children[i], list);
+        this.descendanceList(gameObject.children[i], list, colliderList);
     }
 };

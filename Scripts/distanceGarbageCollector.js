@@ -23,13 +23,14 @@ DistanceGarbageCollector.prototype.update = function(deltaTime) {
 };
 
 DistanceGarbageCollector.prototype.collect = function() {
-    objectsInScene = this.owner.scene.sceneGraph();
+    objectsInScene = this.owner.scene.sceneGraph().gameObjects;
     for(let i = 0; i < objectsInScene.length; i++) {
         let currentObject = objectsInScene[i];
         let distanceWithObject = currentObject.position.z - this.owner.position.z;
 
         if(this.maxDistance > 0) {
             if(distanceWithObject >= this.maxDistance) {
+                //object will persist because object has components, which point to it. Must do something else
                 currentObject.setParent(null);
 				currentObject = null;
 				objectsInScene[i] = null;
