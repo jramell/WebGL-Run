@@ -4,8 +4,8 @@ let Component = function() {
 
 Component.prototype.attachTo = function(gameObject) {
     if(this.owner) {
-        let indexInOwnerComponentList = gameObject.components.indexOf(this);
-        indexInOwnerComponentList.splice(indexInOwnerComponentList, 1);
+        let indexInOwnerComponentList = this.owner.components.indexOf(this);
+        this.owner.components.splice(indexInOwnerComponentList, 1);
     }
     this.owner = gameObject;
     this.owner.components.push(this);

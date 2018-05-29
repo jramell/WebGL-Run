@@ -3,6 +3,9 @@ let Pyramid = function(scene, parent, options=null) {
     let pyramidInfo = createPyramid(options);
     this.indices = new Uint16Array(pyramidInfo.indices);
     this.vertices = new Float32Array(pyramidInfo.vertices);
+
+    let obstacleCollider = new BoxCollider("PyramidCollider", 2, 3, 2, this);
+    obstacleCollider.attachTo(this);
 };
 
 Pyramid.prototype = Object.create(GameObject.prototype);
@@ -25,7 +28,7 @@ Pyramid.prototype.renderSelf = function(gl=this.scene.gl) {
 Pyramid.prototype.setColor = function(baseColor=[0.5, 0.5, 0.5], leftFaceColor=[0.75, 0.25, 0.5],
                                       rightFaceColor=[0.25, 0.25, 0.75], frontFaceColor=[1.0, 0.0, 0.15],
                                       backFaceColor=[1.0, 1.0, 0.15]) {
-    var options = {
+    let options = {
         'baseColor': {r: baseColor[0], g: baseColor[1], b: baseColor[2]},
         'leftFaceColor': {r: leftFaceColor[0], g: leftFaceColor[1], b: leftFaceColor[2]},
         'rightFaceColor': {r: rightFaceColor[0], g: rightFaceColor[1], b: rightFaceColor[2]},

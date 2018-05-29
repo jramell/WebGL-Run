@@ -1,5 +1,5 @@
 //center is a Vector3
-let BoxCollider = function(name="BoxCollider", width=1, height=1, depth=1, center=new Vector3(0, 0, 0)) {
+let BoxCollider = function(name="BoxCollider", width=1, height=1, depth=1, owner=null, center=new Vector3(0, 0, 0)) {
     this.name = name;
     this._bounds = {
         min: {
@@ -12,6 +12,10 @@ let BoxCollider = function(name="BoxCollider", width=1, height=1, depth=1, cente
             y: center.y + height/2,
             z: center.z + depth/2
         }
+    };
+    if(owner) {
+        this.attachTo(owner);
+        this.updateBounds();
     }
 };
 
@@ -35,14 +39,3 @@ BoxCollider.prototype.updateBounds = function() {
         }
     }
 };
-
-//
-// BoxCollider.prototype.updateBounds = function() {
-//     this.bounds.min.x += this.owner.position.x;
-//     this.bounds.min.y += this.owner.position.y;
-//     this.bounds.min.z += this.owner.position.z;
-//
-//     this.bounds.max.x += this.owner.position.x;
-//     this.bounds.max.y += this.owner.position.y;
-//     this.bounds.max.z += this.owner.position.z;
-// };

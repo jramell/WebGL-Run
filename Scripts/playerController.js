@@ -4,7 +4,7 @@ let spaceKeyPressed = false;
 
 let keyPressed = {};
 
-let PlayerController = function(speed=10, jumpStrength=8.2, fallLimit=2) {
+let PlayerController = function(speed=10, jumpStrength=10, fallLimit=2) {
     this.speed = speed;
     this.velocity = new Vector3();
 	this.grounded = true;

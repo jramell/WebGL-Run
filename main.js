@@ -39,10 +39,11 @@ function main() {
     playerCollider.attachTo(player);
 
 
-    let obstacle = new Pyramid(mainScene);
-    let obstacleCollider = new BoxCollider("PyramidCollider", width = 2, height = 3, depth = 2);
-    obstacleCollider.attachTo(obstacle);
+    let obstacle = new Wall(mainScene);
     obstacle.translate(-4, 0, 10);
+
+    let spikeTest = new Spikes(mainScene);
+    spikeTest.translate(4, 0, 10);
 
     console.log("------- Start of Scene Graph -------");
     console.log(mainScene.sceneGraph().gameObjects);
@@ -85,7 +86,7 @@ function main() {
         //     farthestObstacleZ += distanceBetweenObstacles;
         // }
         //------------------------------------------------------------------
-        if(keyPressed['81']) {
+        if(keyPressed['81']) { //q key
             console.log("colliders in scene -------------------");
             console.log(sceneGraph.objectsWithColliders);
             console.log("end colliders in scene -------------------");
@@ -101,7 +102,8 @@ function main() {
 
         collidingWithPlayer.length = 0;
         collidingWithPlayer = checkCollisionsOf(playerCollider);
-        if(collidingWithPlayer.length > 0) {
+        let obstacleIsCollidingWithPlayer = collidingWithPlayer.length > 0;
+        if(obstacleIsCollidingWithPlayer) {
             console.log("colliding with player -------------------");
             console.log(collidingWithPlayer);
             console.log("end colliding with player -------------------");
