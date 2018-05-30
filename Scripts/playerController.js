@@ -6,7 +6,7 @@ let isDead = false;
 
 let keyPressed = {};
 
-let PlayerController = function(speed=10, jumpStrength=10, fallLimit=2) {
+let PlayerController = function(speed=10, jumpStrength=9.5, fallLimit=2) {
     this.speed = speed;
     this.velocity = new Vector3();
 	this.grounded = true;
@@ -79,7 +79,6 @@ PlayerController.prototype.restart = function() {
 	this.restartElement.innerText = '';
 	isDead = false;
 	sceneGraph.gameObjects.length = 0;
-
 	window.location.reload();
     main();
 };

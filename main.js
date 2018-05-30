@@ -103,31 +103,34 @@ function main() {
 
         // ----- code to be moved to an "Obstacle Generator" --------//
         if(totalDuration >= 5) {
-            distanceBetweenObstacles = randomIntInRange(8, 20);
+            distanceBetweenObstacles = randomIntInRange(6, 18);
             playerController.velocity.z += velocityIncreasePerSecond * deltaTime;
             waitBeforeScoreIncrease = (1/scoreIncreasePerSecond) * (initialPlayerSpeed/playerController.velocity.z);
         }
         let distanceToFarthestObstacle = farthestObstacleZ - player.position.z;
 
         if(distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles) {
-            let obstacleSelector = Math.random();
-            let obstacle;
-            if(obstacleSelector <= 0.5) {
-                obstacle = pooledSpikes[0];
-                pooledSpikes.splice(0, 1);
-            } else {
-                obstacle = pooledWalls[0];
-                pooledWalls.splice(0, 1);
-                // if(Math.random() >= 0.5) {
-                //     obstacle.translate(0, 3.5, 0);
-                // }
+            let numberOfSpawnedObjects = 1;//Math.random() <= 0.25? 2 : 1;
+            for(let i = 0; i < numberOfSpawnedObjects; i++) {
+                let obstacleSelector = Math.random();
+                let obstacle;
+                if(obstacleSelector <= 0.5) {
+                    obstacle = pooledSpikes[0];
+                    pooledSpikes.splice(0, 1);
+                } else {
+                    obstacle = pooledWalls[0];
+                    pooledWalls.splice(0, 1);
+                    // if(Math.random() >= 0.5) {
+                    //     obstacle.translate(0, 3.5, 0);
+                    // }
+                }
+                let neededX = lane - obstacle.position.x;
+                let neededZ = (farthestObstacleZ + distanceBetweenObstacles) - obstacle.position.z;
+                obstacle.translate(neededX, 0, neededZ);
+                lane *= -1;
+                obstacle.setScene(mainScene);
             }
-            let neededX = lane - obstacle.position.x;
-            let neededZ = (farthestObstacleZ + distanceBetweenObstacles) - obstacle.position.z;
-            obstacle.translate(neededX, 0, neededZ);
-            lane *= -1;
             farthestObstacleZ += distanceBetweenObstacles;
-            obstacle.setScene(mainScene);
         }
         //------------------------------------------------------
 
@@ -146,7 +149,9 @@ function main() {
         collidingWithPlayer = checkCollisionsOf(playerCollider);
         let obstacleIsCollidingWithPlayer = collidingWithPlayer.length > 0;
         if(obstacleIsCollidingWithPlayer) {
-            playerController.die();
+            if(totalDuration >= 2 && !isDead) {
+                playerController.die();
+            }
         }
 
         requestAnimationFrame(loop);
