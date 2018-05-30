@@ -2,6 +2,13 @@ let sceneManager;
 let sceneGraph;
 let pooledWalls = [];
 let pooledSpikes = [];
+let totalDuration = 0;
+let score = 0;
+
+let initialPlayerSpeed = 12;
+let velocityIncreasePerSecond = 0.5;
+let scoreIncreasePerSecond = 2;
+let waitBeforeScoreIncrease = 1/scoreIncreasePerSecond;
 
 main();
 
@@ -11,6 +18,10 @@ function main() {
     if(!gl) {
         console.log("WebGL not supported");
     }
+
+    let scoreElement = document.getElementById("score");
+    let timeSinceLastScoreIncrease = 0;
+    let score = 0;
 
     gl.enable(gl.DEPTH_TEST);
     let program = getWebGLProgram(gl, getHTMLScriptWithId("vertex-shader"), getHTMLScriptWithId("fragment-shader"));
@@ -35,7 +46,7 @@ function main() {
 
     let playerController = new PlayerController();
     playerController.attachTo(player);
-    playerController.velocity.z = 15;
+    playerController.velocity.z = initialPlayerSpeed;
 
     let playerCollider = new BoxCollider("PlayerCollider", width = 2, height = 2, depth = 2);
     playerCollider.attachTo(player);
@@ -62,12 +73,27 @@ function main() {
         pooledSpikes.push(new Spikes());
     }
 
+    let distanceBetweenObstacles = 45;
+    let numberOfObservableObstacles = 2;
+
+    if(isDead) {
+        isDead = false;
+    }
     let loop = function(now) {
         sceneGraph.length = 0;
         sceneGraph = mainScene.sceneGraph();
         now *= 0.001;
         deltaTime = now - then;
         then = now;
+
+        totalDuration += deltaTime;
+        timeSinceLastScoreIncrease += deltaTime;
+
+        if(timeSinceLastScoreIncrease >= waitBeforeScoreIncrease) {
+            score++;
+            scoreElement.innerHTML = score.toString();
+            timeSinceLastScoreIncrease = 0;
+        }
 
         clearCanvas();
         mainCamera.translate(0, 0, playerController.velocity.z * deltaTime);
@@ -76,9 +102,13 @@ function main() {
         sceneManager.currentScene.render();
 
         // ----- code to be moved to an "Obstacle Generator" --------//
+        if(totalDuration >= 5) {
+            distanceBetweenObstacles = randomIntInRange(8, 20);
+            playerController.velocity.z += velocityIncreasePerSecond * deltaTime;
+            waitBeforeScoreIncrease = (1/scoreIncreasePerSecond) * (initialPlayerSpeed/playerController.velocity.z);
+        }
         let distanceToFarthestObstacle = farthestObstacleZ - player.position.z;
-        let distanceBetweenObstacles = 15;
-        let numberOfObservableObstacles = 2;
+
         if(distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles) {
             let obstacleSelector = Math.random();
             let obstacle;
@@ -88,6 +118,9 @@ function main() {
             } else {
                 obstacle = pooledWalls[0];
                 pooledWalls.splice(0, 1);
+                // if(Math.random() >= 0.5) {
+                //     obstacle.translate(0, 3.5, 0);
+                // }
             }
             let neededX = lane - obstacle.position.x;
             let neededZ = (farthestObstacleZ + distanceBetweenObstacles) - obstacle.position.z;
@@ -108,19 +141,12 @@ function main() {
             console.log(pooledWalls);
             console.log("pooled walls -------------------");
         }
-        // if(keyPressed['87']) {
-        //     playerController.velocity.z = 5;
-        // } else if(keyPressed['83']) {
-        //     playerController.velocity.z = -5;
-        // } else {
-        //     playerController.velocity.z = 0;
-        // }
 
         collidingWithPlayer.length = 0;
         collidingWithPlayer = checkCollisionsOf(playerCollider);
         let obstacleIsCollidingWithPlayer = collidingWithPlayer.length > 0;
         if(obstacleIsCollidingWithPlayer) {
-
+            playerController.die();
         }
 
         requestAnimationFrame(loop);
@@ -153,21 +179,25 @@ function checkCollisionsOf(collider) {
     let a = collider;
     let b;
     let areColliding;
-    for(let i = 0; i < colliders.length; i++) {
+    for (let i = 0; i < colliders.length; i++) {
         b = colliders[i];
 
-        if(b.owner.name === a.owner.name) {
+        if (b.owner.name === a.owner.name) {
             continue;
         }
 
         areColliding = (a.bounds.min.x <= b.bounds.max.x && a.bounds.max.x >= b.bounds.min.x) &&
             (a.bounds.min.y <= b.bounds.max.y && a.bounds.max.y >= b.bounds.min.y) &&
             (a.bounds.min.z <= b.bounds.max.z && a.bounds.max.z >= b.bounds.min.z);
-        if(areColliding) {
+        if (areColliding) {
             inCollisionWithCollider.push(b);
         }
     }
     return inCollisionWithCollider;
+}
+
+function randomIntInRange(min, max) {
+    return Math.floor(Math.random()*(max-min+1)+min);
 }
 
 function clearCanvas(gl=sceneManager.currentScene.gl) {

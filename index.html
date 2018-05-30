@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>WebGL Run</title>
+    <link rel="stylesheet" type="text/css" href="css/overlay.css">
 </head>
 <body>
-    <canvas id="canvas" width="640" height="480"></canvas>
+    <div class="container">
+        <canvas id="canvas" width="640" height="480"></canvas>
+        <div id="overlay">
+            <div><span id="score">1</span></div>
+            <div><span id="top"></span></div>
+            <div style="padding-left: 100px; padding-top: 40px"><span id="restart"></span></div>
+        </div>
+    </div>
 
     <!-- vertex shader -->
     <script id="vertex-shader" type="x-shader/x-vertex">
