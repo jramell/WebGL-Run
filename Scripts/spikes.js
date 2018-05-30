@@ -21,6 +21,12 @@ let Spikes = function(scene, options=null, parent=null) {
     let spikeCollider = new BoxCollider("SpikeCollider", 6, 3, 2, this);
 };
 
+Spikes.prototype.reset = function() {
+    this.setPosition(0, 0, 0);
+    // this.leftPyramid.translate(-2, 0, 0);
+    // this.rightPyramid.translate(2, 0, 0);
+};
+
 Spikes.prototype = Object.create(GameObject.prototype);
 
 Spikes.prototype.setLeftPyramidColor = function(baseColor=[0.5, 0.5, 0.5], leftFaceColor=[0.75, 0.25, 0.5],

@@ -37,9 +37,21 @@ DistanceGarbageCollector.prototype.collect = function() {
             }
         } else {
             if(distanceWithObject <= this.maxDistance) {
-                currentObject.setParent(null);
-				currentObject = null;
-				objectsInScene[i] = null;
+                if(currentObject.parent === this.owner.scene.rootGameObject) {
+                    currentObject.setParent(null);
+                    currentObject.setScene(null);
+                }
+
+                if(currentObject instanceof Wall) {
+                    currentObject.reset();
+                    pooledWalls.push(currentObject);
+                } else if(currentObject instanceof Spikes) {
+                    currentObject.reset();
+                    pooledSpikes.push(currentObject);
+                }
+
+                currentObject = null;
+                objectsInScene[i] = null;
             }
         }
     }

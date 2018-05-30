@@ -11,12 +11,9 @@ let GameObject = function(scene, parent, name="GameObject") {
     this.worldMatrix = mat4.create();
     this.indices = [];
     this.vertices = [];
-    this.scene = scene;
     this.position = new Position();
     this.components = [];
-    if(scene) {
-        scene.addGameObjectAsChildOfRoot(this);
-    }
+    this.setScene(scene);
     if(parent) {
         this.setParent(parent);
     }
@@ -55,10 +52,26 @@ GameObject.prototype.updateWorldMatrix = function(parentWorldMatrix) {
     });
 };
 
+GameObject.prototype.setScene = function(scene) {
+    this.scene = scene;
+    if(this.scene) {
+        this.scene.addGameObjectAsChildOfRoot(this);
+        for(let i = 0; i < this.children.length; i++) {
+            this.children[i].scene = this.scene;
+        }
+    }
+
+};
+
 GameObject.prototype.translate = function(x, y, z) {
     this.position.x += x;
     this.position.y += y;
     this.position.z += z;
+    for(let i = 0; i < this.children.length; i++) {
+        this.children[i].position.x += x;
+        this.children[i].position.y += y;
+        this.children[i].position.z += z;
+    }
     mat4.translate(this.localMatrix, this.localMatrix, [x, y, z]);
 };
 
@@ -70,6 +83,11 @@ GameObject.prototype.setPosition = function(x, y, z) {
     this.position.x = x;
     this.position.y = y;
     this.position.z = z;
+    for(let i = 0; i < this.children.length; i++) {
+        this.children[i].position.x += deltaX;
+        this.children[i].position.y += deltaY;
+        this.children[i].position.z += deltaZ;
+    }
 };
 
 GameObject.prototype.setScale = function(x, y, z) {
@@ -103,4 +121,8 @@ GameObject.prototype.update = function(deltaTime) {
     for(let i = 0; i < this.components.length; i++) {
         this.components[i].update(deltaTime);
     }
+};
+
+GameObject.prototype.reset = function() {
+
 };

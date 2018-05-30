@@ -55,3 +55,8 @@ PlayerController.prototype.applyGravity = function(deltaTime) {
 		this.grounded = true;
 	}
 };
+
+PlayerController.prototype.die = function() {
+	this.velocity = new Vector3(0, 0, 0);
+
+};

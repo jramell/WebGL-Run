@@ -1,5 +1,11 @@
-let ObstacleSpawner = function(distanceBetweenObstacles=20, visibleObstacles=3, name="ObstacleSpawner") {
+let ObstacleSpawner = function(distanceBetweenObstacles=20, visibleObstacles=4, name="ObstacleSpawner") {
     Script.call(this, name);
+    this.distanceBetweenObstacles = distanceBetweenObstacles;
+    this.visibleObstacles = visibleObstacles;
+    this.lane = 3;
+    this.farthestObstacleZ = 0;
+    this.visibleObstacles = visibleObstacles;
+    this.spawningObject = false;
     // this.walls = [];
     // for(let i = 0; i < visibleObstacles; ++i) {
     //     let wall = new Cube();
@@ -12,21 +18,21 @@ let ObstacleSpawner = function(distanceBetweenObstacles=20, visibleObstacles=3, 
 ObstacleSpawner.prototype = Object.create(Script.prototype);
 
 ObstacleSpawner.prototype.update = function(deltaTime) {
-    let distanceToFarthestObstacle = farthestObstacleZ - player.position.z;
-    let distanceBetweenObstacles = 15;
-    let numberOfObservableObstacles = 2;
-    let shouldSpawnObstacle = distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles;
+    if(this.spawningObject) {
+        return;
+    }
+    let distanceToFarthestObstacle = this.farthestObstacleZ - this.owner.position.z;
+    let shouldSpawnObstacle = distanceToFarthestObstacle <= this.distanceBetweenObstacles * this.visibleObstacles;
+    console.log
     if(shouldSpawnObstacle) {
-        let obstacle = new Pyramid(mainScene);
-        let obstacleCollider = new BoxCollider("PyramidCollider");
-        obstacleCollider.attachTo(obstacle);
-        obstacle.translate(lane, 0, farthestObstacleZ + distanceBetweenObstacles);
-        lane *= -1;
-        farthestObstacleZ += distanceBetweenObstacles;
+        this.spawnRandomObstacle(this.distanceBetweenObstacles, this.lane);
+        this.lane *= -1;
+        this.farthestObstacleZ += this.distanceBetweenObstacles;
     }
 };
 
 ObstacleSpawner.prototype.spawnRandomObstacle = function(obstacleDistance, lane=0) {
+    this.spawningObject = true;
     if(lane == 0) {
         lane = Math.random() < 0.5? 1 : -1;
     }
@@ -40,10 +46,11 @@ ObstacleSpawner.prototype.spawnRandomObstacle = function(obstacleDistance, lane=
 
     let elevationSelector = Math.random();
     if(elevationSelector <= 0.5) {
-        obstacle.translate(0, 1, 0);
+        obstacle.translate(0, 3, 0);
     }
 
-    obstacle.translate(lane, 0, obstacleDistance);
+    obstacle.translate(lane, 0, obstacleDistance + this.owner.position.z);
+    this.spawningObject = false;
 };
 
 

@@ -8,3 +8,8 @@ let Wall = function(scene, options=null, parent=null) {
 };
 
 Wall.prototype = Object.create(GameObject.prototype);
+
+Wall.prototype.reset = function() {
+    this.setPosition(0, 0, 0);
+    //this.body.translate(0, 1.75, 0);
+};

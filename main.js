@@ -1,5 +1,7 @@
 let sceneManager;
 let sceneGraph;
+let pooledWalls = [];
+let pooledSpikes = [];
 
 main();
 
@@ -33,17 +35,10 @@ function main() {
 
     let playerController = new PlayerController();
     playerController.attachTo(player);
-    playerController.velocity.z = 10;
+    playerController.velocity.z = 15;
 
     let playerCollider = new BoxCollider("PlayerCollider", width = 2, height = 2, depth = 2);
     playerCollider.attachTo(player);
-
-
-    let obstacle = new Wall(mainScene);
-    obstacle.translate(-4, 0, 10);
-
-    let spikeTest = new Spikes(mainScene);
-    spikeTest.translate(4, 0, 10);
 
     console.log("------- Start of Scene Graph -------");
     console.log(mainScene.sceneGraph().gameObjects);
@@ -51,15 +46,22 @@ function main() {
 
     sceneGraph = mainScene.sceneGraph();
 
-
-
     //Main render loop
     let then = 0;
 
     let farthestObstacleZ = 0;
-    let lane = 4;
+    let lane = 3;
     let deltaTime = 0;
     let collidingWithPlayer = [];
+
+    for(let i = 0; i < 10; i++) {
+        pooledWalls.push(new Wall());
+    }
+
+    for(let i = 0; i < 10; i++) {
+        pooledSpikes.push(new Spikes());
+    }
+
     let loop = function(now) {
         sceneGraph.length = 0;
         sceneGraph = mainScene.sceneGraph();
@@ -68,51 +70,81 @@ function main() {
         then = now;
 
         clearCanvas();
-        //mainCamera.translate(0, 0, 10 * deltaTime);
+        mainCamera.translate(0, 0, playerController.velocity.z * deltaTime);
 
         sceneManager.currentScene.update(deltaTime);
         sceneManager.currentScene.render();
 
-        //----- code to be moved to an "Obstacle Generator" --------//
-        // let distanceToFarthestObstacle = farthestObstacleZ - player.position.z;
-        // let distanceBetweenObstacles = 15;
-        // let numberOfObservableObstacles = 2;
-        // if(distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles) {
-        //     let obstacle = new Pyramid(mainScene);
-        //     let obstacleCollider = new BoxCollider("PyramidCollider");
-        //     obstacleCollider.attachTo(obstacle);
-        //     obstacle.translate(lane, 0, farthestObstacleZ + distanceBetweenObstacles);
-        //     lane *= -1;
-        //     farthestObstacleZ += distanceBetweenObstacles;
-        // }
-        //------------------------------------------------------------------
-        if(keyPressed['81']) { //q key
-            console.log("colliders in scene -------------------");
-            console.log(sceneGraph.objectsWithColliders);
-            console.log("end colliders in scene -------------------");
+        // ----- code to be moved to an "Obstacle Generator" --------//
+        let distanceToFarthestObstacle = farthestObstacleZ - player.position.z;
+        let distanceBetweenObstacles = 15;
+        let numberOfObservableObstacles = 2;
+        if(distanceToFarthestObstacle <= distanceBetweenObstacles * numberOfObservableObstacles) {
+            let obstacleSelector = Math.random();
+            let obstacle;
+            if(obstacleSelector <= 0.5) {
+                obstacle = pooledSpikes[0];
+                pooledSpikes.splice(0, 1);
+            } else {
+                obstacle = pooledWalls[0];
+                pooledWalls.splice(0, 1);
+            }
+            let neededX = lane - obstacle.position.x;
+            let neededZ = (farthestObstacleZ + distanceBetweenObstacles) - obstacle.position.z;
+            obstacle.translate(neededX, 0, neededZ);
+            lane *= -1;
+            farthestObstacleZ += distanceBetweenObstacles;
+            obstacle.setScene(mainScene);
         }
+        //------------------------------------------------------
 
-        if(keyPressed['87']) {
-            playerController.velocity.z = 5;
-        } else if(keyPressed['83']) {
-            playerController.velocity.z = -5;
-        } else {
-            playerController.velocity.z = 0;
+        if(keyPressed['81']) { //q key
+            console.log("scene graph -------------------");
+            console.log(sceneGraph.gameObjects);
+            console.log("end scene graph -------------------");
         }
+        if(keyPressed['87']) { //w key
+            console.log("pooled walls -------------------");
+            console.log(pooledWalls);
+            console.log("pooled walls -------------------");
+        }
+        // if(keyPressed['87']) {
+        //     playerController.velocity.z = 5;
+        // } else if(keyPressed['83']) {
+        //     playerController.velocity.z = -5;
+        // } else {
+        //     playerController.velocity.z = 0;
+        // }
 
         collidingWithPlayer.length = 0;
         collidingWithPlayer = checkCollisionsOf(playerCollider);
         let obstacleIsCollidingWithPlayer = collidingWithPlayer.length > 0;
         if(obstacleIsCollidingWithPlayer) {
-            console.log("colliding with player -------------------");
-            console.log(collidingWithPlayer);
-            console.log("end colliding with player -------------------");
+
         }
 
         requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
 }
+
+// function spawnSpikes(scene, positionInZ) {
+//     let leftPyramid = new Pyramid(scene, this);
+//     let rightPyramid = new Pyramid(scene, this);
+//     let centerPyramid = new Pyramid(scene, this);
+//
+//     leftPyramid.translate(-2, 0, positionInZ);
+//     rightPyramid.translate(2, 0, positionInZ);
+//     centerPyramid.translate(0, 0, positionInZ);
+//
+//     leftPyramid.setColor([0.2, 0.2, 0.2], [0.4, 0.4, 0.4], [0.4, 0.4, 0.4], [0.2, 0.2, 0.2], [0.2, 0.2, 0.2]);
+//     rightPyramid.setColor([0.2, 0.2, 0.2], [0.4, 0.4, 0.4], [0.4, 0.4, 0.4], [0.2, 0.2, 0.2], [0.2, 0.2, 0.2]);
+//     centerPyramid.setColor([0.2, 0.2, 0.2], [0.4, 0.4, 0.4], [0.4, 0.4, 0.4], [0.2, 0.2, 0.2], [0.2, 0.2, 0.2]);
+//
+//     leftPyramid.setScale(1, 0.85, 1);
+//     rightPyramid.setScale(1, 0.85, 1);
+//     centerPyramid.setScale(1, 0.85, 1);
+// }
 
 //returns [] list of colliders colliding with collider input as a parameter
 function checkCollisionsOf(collider) {

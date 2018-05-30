@@ -7,7 +7,10 @@ let Cube = function(name="Cube", scene, parent, options=null) {
 
 Cube.prototype = Object.create(GameObject.prototype);
 
-Cube.prototype.renderSelf = function(gl=this.scene.gl) {
+Cube.prototype.renderSelf = function(gl) {
+    if(!gl) {
+            gl = this.scene.gl;
+    }
     this.scene.setShaderWorldMatrix(this.worldMatrix);
     this.configureIndices(gl);
     this.configureVertices(gl, this.scene.currentWebGLProgram);
